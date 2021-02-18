@@ -1,56 +1,74 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
-
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import Header from "./Components/Header/Header";
+import Sidebar from "./Components/Sidebar/Sidebar";
+import Feed from "./Components/Feed/Feed";
+import Dashboard from "./Components/Dashboard/Dashboard";
+import { login, logout, selectUser } from "./features/userSlice";
+import { useSelector } from "react-redux";
+import Login from "./Components/Login/Login";
+import { auth } from "./firebase";
+import { useDispatch } from "react-redux";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link as Links,
+} from "react-router-dom";
 function App() {
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+  const [searchText, setSearchText] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    auth.onAuthStateChanged((userAuth) => {
+      if (userAuth) {
+        setIsAuthenticated(true);
+        //user logged in
+        dispatch(
+          login({
+            email: userAuth.email,
+            uid: userAuth.uid,
+            displayName: userAuth.displayName,
+            photoUrl: userAuth.photoURL,
+          })
+        );
+      } else {
+        //logged out
+        setIsAuthenticated(false);
+
+        dispatch(logout());
+      }
+    });
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+    <div className="app">
+      <Router>
+        <Switch>
+          <Route path="/" exact>
+            {!user ? (
+              <Login />
+            ) : (
+              <Dashboard
+                searchText={searchText}
+                setSearchText={setSearchText}
+              />
+            )}
+          </Route>
+          <Route path="/login">
+            <Login />
+          </Route>
+          <Route path="/dashboard">
+            <Dashboard searchText={searchText} setSearchText={setSearchText} />
+          </Route>
+        </Switch>
+        {/* {!user ? (
+          <Login />
+        ) : (
+          <Dashboard searchText={searchText} setSearchText={setSearchText} />
+        )} */}
+      </Router>
     </div>
   );
 }
