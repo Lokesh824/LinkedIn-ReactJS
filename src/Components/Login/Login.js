@@ -69,12 +69,12 @@ function Login() {
           placeholder="Full name (Fill if registering)"
           type="text"
         />
-        <input
+        {/* <input
           value={profilePic}
           onChange={(e) => setProfilePic(e.target.value)}
           placeholder="Profile Picture URL  (Fill if registering)"
           type="text"
-        />
+        /> */}
         <input
           value={email}
           onChange={(e) => setEmail(e.target.value)}
