@@ -39,7 +39,7 @@ function Header({ searchText, setSearchText }) {
       </div>
       <div className="header_right">
         <HeaderOptions Icon={HomeIcon} title="Home" />
-        <HeaderOptions Icon={SupervisorAccountIcon} title="My Network" />
+        <HeaderOptions Icon={SupervisorAccountIcon} title="Network" />
         <HeaderOptions Icon={BusinessCenterIcon} title="Jobs" />
         <HeaderOptions Icon={ChatIcon} title="Messaging" />
         <HeaderOptions
